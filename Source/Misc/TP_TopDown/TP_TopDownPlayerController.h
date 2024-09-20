@@ -24,6 +24,8 @@ protected:
 
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
+
+	void OnSlice();
 };
 
 
