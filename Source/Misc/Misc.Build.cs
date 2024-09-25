@@ -15,7 +15,8 @@ public class Misc : ModuleRules
 			"Engine",
 			"InputCore",
 			"ProceduralMeshComponent",
-			"AIModule"
+			"AIModule",
+			"Tore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
