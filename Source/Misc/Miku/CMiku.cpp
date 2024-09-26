@@ -17,12 +17,17 @@ ACMiku::ACMiku()
 
 void ACMiku::OnConstruction(const FTransform& Transform)
 {
-	Super::OnConstruction(Transform);
 
 	if (MaterialData)
 	{
 		TArray<FMaterialElementData*> ReadDatas;
 		MaterialData->GetAllRows("", ReadDatas);
+
+		if ((int32)RenderType >= (int32)ReadDatas.Num())
+		{
+			UE_LOG(LogTemp, Error, TEXT("RenderType is out of size"));
+			return;
+		}
 
 		if (ReadDatas[(int32)RenderType] && ReadDatas[(int32)RenderType]->DataAsset)
 		{
@@ -30,11 +35,16 @@ void ACMiku::OnConstruction(const FTransform& Transform)
 
 			for (int32 i = 0; i < (int32)EMaterialElementType::Max; i++)
 			{
-				//Todo. SelectedDataAsset->Materials[i] check null
-				GetMesh()->SetMaterial(i, SelectedDataAsset->Materials[i]);
+				if (SelectedDataAsset->Materials[i])
+				{
+					GetMesh()->SetMaterial(i, SelectedDataAsset->Materials[i]);
+				}
 			}
 		}
 	}
+
+	Super::OnConstruction(Transform);
+
 }
 
 void ACMiku::Tick(float DeltaTime)

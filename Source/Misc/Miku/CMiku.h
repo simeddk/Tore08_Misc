@@ -22,9 +22,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Materials")
+	UPROPERTY(EditAnywhere, Category = "AMiku")
 	UDataTable* MaterialData;
 
-	UPROPERTY(EditAnywhere, Category = "Materials")
+	UPROPERTY(EditAnywhere, Category = "AMiku")
 	ERenderType RenderType;
 };
