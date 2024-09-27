@@ -6,6 +6,7 @@
 #include "CMiku.generated.h"
 
 class UDataTable;
+class UMaterialInstanceConstant;
 
 UCLASS()
 class MISC_API ACMiku : public ACharacter
@@ -18,8 +19,11 @@ public:
 protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
+
+#if WITH_EDITOR
+protected:
+	void SetLightDirectionToMaterials(FVector InDirection);
+#endif
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "AMiku")
@@ -27,4 +31,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "AMiku")
 	ERenderType RenderType;
+
+	UPROPERTY(EditAnywhere, Category = "AMiku", meta = (ClampMax = 1.00, ClampMin = -1.00))
+	FVector LightDirection;
+
+private:
+	TArray<UMaterialInstanceConstant*> MikuMaterials;
 };

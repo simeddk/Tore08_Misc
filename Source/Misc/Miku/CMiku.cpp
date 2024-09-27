@@ -3,8 +3,6 @@
 
 ACMiku::ACMiku()
 {
-	PrimaryActorTick.bCanEverTick = true;
-
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/AMiku/Mesh/Appearance_Miku"));
 	if (MeshAsset.Succeeded())
 	{
@@ -13,10 +11,15 @@ ACMiku::ACMiku()
 
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -88));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+
+	LightDirection = FVector(1, 1, 1);
+
+	bRunConstructionScriptOnDrag = false;
 }
 
 void ACMiku::OnConstruction(const FTransform& Transform)
 {
+	Super::OnConstruction(Transform);
 
 	if (MaterialData)
 	{
@@ -29,6 +32,7 @@ void ACMiku::OnConstruction(const FTransform& Transform)
 			return;
 		}
 
+		MikuMaterials.Empty();
 		if (ReadDatas[(int32)RenderType] && ReadDatas[(int32)RenderType]->DataAsset)
 		{
 			UCMaterialData* SelectedDataAsset = ReadDatas[(int32)RenderType]->DataAsset;
@@ -37,19 +41,37 @@ void ACMiku::OnConstruction(const FTransform& Transform)
 			{
 				if (SelectedDataAsset->Materials[i])
 				{
+					MikuMaterials.Add(SelectedDataAsset->Materials[i]);
+
 					GetMesh()->SetMaterial(i, SelectedDataAsset->Materials[i]);
 				}
 			}
 		}
 	}
 
-	Super::OnConstruction(Transform);
+
+	SetLightDirectionToMaterials(LightDirection);
 
 }
 
-void ACMiku::Tick(float DeltaTime)
+
+#if WITH_EDITOR
+void ACMiku::SetLightDirectionToMaterials(FVector InDirection)
 {
-	Super::Tick(DeltaTime);
+	for (UMaterialInstanceConstant* Material : MikuMaterials)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::White, GetNameSafe(Material));
 
+		for (const FVectorParameterValue& VectorParams : Material->VectorParameterValues)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::White, VectorParams.ParameterInfo.Name.ToString());
+
+			if (VectorParams.ParameterInfo.Name == "LightDirection")
+			{
+				Material->SetVectorParameterValueEditorOnly(VectorParams.ParameterInfo, InDirection);
+			}
+		}
+	}
 }
+#endif
 
