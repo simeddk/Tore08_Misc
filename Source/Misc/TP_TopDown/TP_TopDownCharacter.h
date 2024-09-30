@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "TP_TopDownCharacter.generated.h"
 
+class UMaterialInstanceDynamic;
+
 UCLASS(Blueprintable)
 class ATP_TopDownCharacter : public ACharacter
 {
@@ -12,9 +14,17 @@ class ATP_TopDownCharacter : public ACharacter
 public:
 	ATP_TopDownCharacter();
 
+protected:
+	virtual void BeginPlay() override;
+
+public:
 	virtual void Tick(float DeltaSeconds) override;
 
+public:
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
+
+	void OnSprint();
+	void OffSprint();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -25,5 +35,17 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
+
+	UPROPERTY(VisibleAnywhere, Category = "Smear")
+	UMaterialInterface* OriginMaterial;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Smear")
+	UMaterialInterface* SmearMaterial;
+
+	UPROPERTY(VisibleAnywhere, Category = "Smear")
+	UMaterialInstanceDynamic* SmearMaterialDynamic;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Smear")
+	float SmearWeight;
 };
 

@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Materials/Material.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Engine/World.h"
 
 ATP_TopDownCharacter::ATP_TopDownCharacter()
@@ -46,6 +47,20 @@ ATP_TopDownCharacter::ATP_TopDownCharacter()
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	SmearWeight = 0.05f;
+}
+
+void ATP_TopDownCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	OriginMaterial = GetMesh()->GetMaterial(0);
+
+	if (ensure(SmearMaterial))
+	{
+		SmearMaterialDynamic = UMaterialInstanceDynamic::Create(SmearMaterial, this);
+	}
 }
 
 void ATP_TopDownCharacter::Tick(float DeltaSeconds)
@@ -64,4 +79,22 @@ void ATP_TopDownCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+}
+
+void ATP_TopDownCharacter::OnSprint()
+{
+	GetMesh()->SetMaterial(0, SmearMaterialDynamic);
+	GetCharacterMovement()->MaxWalkSpeed = 2000.f;
+
+	SmearMaterialDynamic->SetVectorParameterValue("Direction", -GetVelocity().GetSafeNormal());
+	SmearMaterialDynamic->SetScalarParameterValue("Length", GetVelocity().Size() * SmearWeight);
+}
+
+void ATP_TopDownCharacter::OffSprint()
+{
+	GetMesh()->SetMaterial(0, OriginMaterial);
+	GetCharacterMovement()->MaxWalkSpeed = 600;
+
+	SmearMaterialDynamic->SetVectorParameterValue("Direction", FVector::ZeroVector);
+	SmearMaterialDynamic->SetScalarParameterValue("Length", 0.f);
 }
