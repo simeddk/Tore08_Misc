@@ -3,6 +3,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PostProcessComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -49,6 +50,14 @@ ATP_TopDownCharacter::ATP_TopDownCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	SmearWeight = 0.05f;
+
+	PostProcessComp = CreateDefaultSubobject<UPostProcessComponent>(TEXT("PostProcessComp"));
+	PostProcessComp->SetupAttachment(RootComponent);
+
+	/*if (SphereMaskMaterial)
+	{
+		PostProcessComp->Settings.AddBlendable(SphereMaskMaterial, 1.f);
+	}*/
 }
 
 void ATP_TopDownCharacter::BeginPlay()
