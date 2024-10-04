@@ -1,9 +1,13 @@
 #include "Tore.h"
 #include "LevelEditor.h"
+#include "GameplayDebuggerCategory.h"
+#include "GameplayDebugger.h"
 #include "ToolBar/CButtonCommand.h"
 #include "ToolBar/CIconStyle.h"
 #include "AssetToolsModule.h"
 #include "AssetTools/CAssetTypeAction.h"
+#include "DebuggerCategory/CDebuggerCategory.h"
+
 
 #define LOCTEXT_NAMESPACE "FToreModule"
 
@@ -18,11 +22,23 @@ void FToreModule::StartupModule()
 
 		Extender = MakeShareable(new FExtender());
 
-		FToolBarExtensionDelegate Delegate = FToolBarExtensionDelegate::CreateRaw(this, &FToreModule::AddLoadMeshButton);
-		Extender->AddToolBarExtension("Misc", EExtensionHook::Before, CButtonCommand::Get().LoadMeshCommandList, Delegate);
+		FToolBarExtensionDelegate AddLoadMeshButtonDelegate = FToolBarExtensionDelegate::CreateRaw(this, &FToreModule::AddLoadMeshButton);
+		Extender->AddToolBarExtension("Misc", EExtensionHook::Before, CButtonCommand::Get().CommandList, AddLoadMeshButtonDelegate);
+
+		FToolBarExtensionDelegate AddOpenViewerButtonDelegate = FToolBarExtensionDelegate::CreateRaw(this, &FToreModule::AddOpenViewerButton);
+		Extender->AddToolBarExtension("Misc", EExtensionHook::Before, CButtonCommand::Get().CommandList, AddOpenViewerButtonDelegate);
 
 		FLevelEditorModule& LevelEditor = FModuleManager::LoadModuleChecked<FLevelEditorModule>("LevelEditor");
 		LevelEditor.GetToolBarExtensibilityManager()->AddExtender(Extender);
+	}
+
+	//GameplayDebuggerCategory
+	{
+		//FModuleManager::LoadModuleChecked<IGameplayDebugger>("GameplayDebugger");
+		IGameplayDebugger& GameplayDebugger = IGameplayDebugger::Get();
+		IGameplayDebugger::FOnGetCategory MakeInstanceDelegate = IGameplayDebugger::FOnGetCategory::CreateStatic(&CDebuggerCategory::MakeInstance);
+		GameplayDebugger.RegisterCategory("ToreCategory", MakeInstanceDelegate, EGameplayDebuggerCategoryState::EnabledInGameAndSimulate, 7);
+		GameplayDebugger.NotifyCategoriesChanged();
 	}
 
 	//AssetTools
@@ -40,6 +56,11 @@ void FToreModule::ShutdownModule()
 	UE_LOG(LogTemp, Error, TEXT("Shutdown Tore Module"));
 
 	CIconStyle::Shutdown();
+
+	if (IGameplayDebugger::IsAvailable())
+	{
+		IGameplayDebugger::Get().UnregisterCategory("ToreCategory");
+	}
 }
 
 void FToreModule::AddLoadMeshButton(FToolBarBuilder& ToolBarBuilder)
@@ -54,6 +75,18 @@ void FToreModule::AddLoadMeshButton(FToolBarBuilder& ToolBarBuilder)
 		FText::FromString("Load Mesh"),
 		FText::FromString("Load Mesh Data"),
 		CIconStyle::Get()->LoadMeshIcon
+	);
+}
+
+void FToreModule::AddOpenViewerButton(FToolBarBuilder& ToolBarBuilder)
+{
+	ToolBarBuilder.AddToolBarButton
+	(
+		CButtonCommand::Get().OpenViewerButtonID,
+		NAME_None,
+		FText::FromString("Open Viewer"),
+		FText::FromString("Open My Viewer"),
+		CIconStyle::Get()->OpenViewerIcon
 	);
 }
 

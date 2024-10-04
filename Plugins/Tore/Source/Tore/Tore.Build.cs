@@ -26,7 +26,8 @@ public class Tore : ModuleRules
 			"SlateCore",
 			"UnrealEd",
 			"EditorStyle",
-			"Projects"
+			"Projects",
+			"GameplayDebugger"
 		});
 		
 	}

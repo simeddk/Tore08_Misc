@@ -14,8 +14,11 @@ public:
 
 private:
 	void OnLoadMeshButtonClicked();
+	void OnOpenViewerButtonClicked();
 
 public:
 	TSharedPtr<FUICommandInfo> LoadMeshButtonID;
-	TSharedPtr<FUICommandList> LoadMeshCommandList;
+	TSharedPtr<FUICommandInfo> OpenViewerButtonID;
+
+	TSharedPtr<FUICommandList> CommandList;
 };

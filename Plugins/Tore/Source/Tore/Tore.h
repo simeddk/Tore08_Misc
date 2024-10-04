@@ -14,6 +14,7 @@ public:
 
 private:
 	void AddLoadMeshButton(FToolBarBuilder& ToolBarBuilder);
+	void AddOpenViewerButton(FToolBarBuilder& ToolBarBuilder);
 
 private:
 	TSharedPtr<FExtender> Extender;
