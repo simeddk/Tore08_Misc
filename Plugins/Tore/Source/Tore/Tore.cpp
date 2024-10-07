@@ -7,6 +7,8 @@
 #include "AssetToolsModule.h"
 #include "AssetTools/CAssetTypeAction.h"
 #include "DebuggerCategory/CDebuggerCategory.h"
+#include "DetailPannel/CDetailPannel.h"
+#include "RHI/CHasDetailButton.h"
 
 
 #define LOCTEXT_NAMESPACE "FToreModule"
@@ -39,6 +41,17 @@ void FToreModule::StartupModule()
 		IGameplayDebugger::FOnGetCategory MakeInstanceDelegate = IGameplayDebugger::FOnGetCategory::CreateStatic(&CDebuggerCategory::MakeInstance);
 		GameplayDebugger.RegisterCategory("ToreCategory", MakeInstanceDelegate, EGameplayDebuggerCategoryState::EnabledInGameAndSimulate, 7);
 		GameplayDebugger.NotifyCategoriesChanged();
+	}
+
+	//DetailPannel
+	{
+		FPropertyEditorModule& PropertyEditor = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+		
+		PropertyEditor.RegisterCustomClassLayout
+		(
+			ACHasDetailButton::StaticClass()->GetFName(), 
+			FOnGetDetailCustomizationInstance::CreateStatic(&CDetailPannel::MakeInstance)
+		);
 	}
 
 	//AssetTools

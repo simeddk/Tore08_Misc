@@ -27,7 +27,9 @@ public class Tore : ModuleRules
 			"UnrealEd",
 			"EditorStyle",
 			"Projects",
-			"GameplayDebugger"
+			"GameplayDebugger",
+			"DesktopPlatform",
+			"Misc"
 		});
 		
 	}
