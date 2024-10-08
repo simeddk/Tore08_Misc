@@ -29,6 +29,7 @@ public class Tore : ModuleRules
 			"Projects",
 			"GameplayDebugger",
 			"DesktopPlatform",
+			"MainFrame",
 			"Misc"
 		});
 		
