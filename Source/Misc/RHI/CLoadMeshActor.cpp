@@ -16,12 +16,12 @@ void ACLoadMeshActor::OnConstruction(const FTransform& Transform)
 	ProcMeshComp->CreateMeshSection(0, Positions, Indices, Normals, UVs, Colors, TArray<FProcMeshTangent>(), true);
 }
 
-void ACLoadMeshActor::SetVertices(const TArray<FVector>& Positions, const TArray<FVector>& Normals, const TArray<FVector2D>& UVs, const TArray<FColor>& Colors, const TArray<int32>& Indices)
+void ACLoadMeshActor::SetVertices(const TArray<FVector>& InPositions, const TArray<FVector>& InNormals, const TArray<FVector2D>& InUVs, const TArray<FColor>& InColors, const TArray<int32>& InIndices)
 {
-	this->Positions = Positions;
-	this->Normals = Normals;
-	this->UVs = UVs;
-	this->Colors = Colors;
-	this->Indices = Indices;
+	Positions = InPositions;
+	Normals = InNormals;
+	UVs = InUVs;
+	Colors = InColors;
+	Indices = InIndices;
 
 }

@@ -18,11 +18,11 @@ public:
 
 	void SetVertices
 	(
-		const TArray<FVector>& Positions,
-		const TArray<FVector>& Normals,
-		const TArray<FVector2D>& UVs,
-		const TArray<FColor>& Colors,
-		const TArray<int32>& Indices
+		const TArray<FVector>& InPositions,
+		const TArray<FVector>& InNormals,
+		const TArray<FVector2D>& InUVs,
+		const TArray<FColor>& InColors,
+		const TArray<int32>& InIndices
 	);
 	
 protected:

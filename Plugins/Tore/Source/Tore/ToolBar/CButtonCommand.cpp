@@ -5,7 +5,10 @@
 #include "Misc/FileHelper.h"
 #include "LevelEditorViewport.h"
 #include "DetailPannel/CDetailPannel.h"
+#include "AssetViewer/CAssetViewer.h"
+
 #include "RHI/CLoadMeshActor.h"
+#include "RHI/CProperty.h"
 
 CButtonCommand::CButtonCommand()
 	: TCommands("Tore", FText::FromString("My Command"), NAME_None, FEditorStyle::GetStyleSetName())
@@ -105,17 +108,28 @@ void CButtonCommand::OnLoadMeshButtonClicked()
 	//-------------------------------------------------------------------------
 	//Spawn ProcMesh Actor
 	//-------------------------------------------------------------------------
-	UWorld* World = GEditor->GetEditorWorldContext().World();
-	
 	FLevelEditorViewportClient* Client =(FLevelEditorViewportClient*)GEditor->GetActiveViewport()->GetClient();
 
 	FVector Start = Client->GetViewLocation();
-	FVector End = ;
+	FVector End = Start + Client->GetViewRotation().RotateVector(FVector(1e+4f, 0, 0));
 
+	UWorld* World = GEditor->GetEditorWorldContext().World();
 	FHitResult Hit;
-	World->LineTraceSingleByChannel(Hit, );
+	World->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility);
+
+	if (Hit.bBlockingHit == false)
+	{
+		return;
+	}
 
 	FTransform TM;
+	FVector Direction = (Hit.ImpactPoint - Start).GetSafeNormal();
+	FRotator Rotation = FRotator(0, Direction.Rotation().Yaw, 0);
+	
+	GLog->Log(Direction.ToString());
+
+	TM.SetLocation(Hit.ImpactPoint);
+	TM.SetRotation(FQuat(Rotation));
 
 	ACLoadMeshActor* SpawnedActor = World->SpawnActorDeferred<ACLoadMeshActor>
 	(
@@ -134,4 +148,6 @@ void CButtonCommand::OnLoadMeshButtonClicked()
 void CButtonCommand::OnOpenViewerButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s"), TEXT(__FUNCTION__));
+
+	CAssetViewer::OpenWindow(NewObject<UCProperty>());
 }
