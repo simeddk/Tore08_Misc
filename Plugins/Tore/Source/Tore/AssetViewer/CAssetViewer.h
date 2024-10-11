@@ -3,6 +3,9 @@
 #include "CoreMinimal.h"
 #include "Toolkits/AssetEditorToolkit.h"
 
+class SCViewport;
+class IDetailsView;
+
 class TORE_API CAssetViewer : public FAssetEditorToolkit
 {
 public:
@@ -14,7 +17,10 @@ private:
 
 private:
 	virtual void RegisterTabSpawners(const TSharedRef<FTabManager>& InTabManager) override;
+	
 	TSharedRef<SDockTab> Spawn_ViewportTab(const FSpawnTabArgs& InArgs);
+	TSharedRef<SDockTab> Spawn_PreviewSceneSettingsTab(const FSpawnTabArgs& InArgs);
+	TSharedRef<SDockTab> Spawn_DetailsViewTab(const FSpawnTabArgs& InArgs);
 
 public:
 	virtual FName GetToolkitFName() const override;
@@ -25,4 +31,8 @@ public:
 private:
 	static TSharedPtr<CAssetViewer> Instance;
 
+private:
+	TSharedPtr<SCViewport> Viewport;
+	TSharedPtr<SWidget> PreviewSceneSettings;
+	TSharedPtr<IDetailsView> DetailsView;
 };

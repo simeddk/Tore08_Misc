@@ -30,6 +30,8 @@ public class Tore : ModuleRules
 			"GameplayDebugger",
 			"DesktopPlatform",
 			"MainFrame",
+			"AdvancedPreviewScene",
+			"InputCore",
 			"Misc"
 		});
 		
