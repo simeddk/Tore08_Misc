@@ -1,4 +1,5 @@
 *.zip
+Content/InfinityBladeGrassLands/Maps/HLOD/*
 
 # Visual Studio 2015 user specific files
 .vs/
